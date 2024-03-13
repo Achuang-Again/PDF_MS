@@ -12,14 +12,14 @@ class graphTmp():
         self.g = graph
         self.feat = Tensor(feat)
         self.bases = bases
-        self.label = Tensor(label).view((1))
+        self.label = Tensor(label).view((1)).astype(ms.int32)
 
 
 class batchedGraphTmp():
     def __init__(self, batchedgraph, feats, bases, labels):
         self.bg = batchedgraph
-        self.feats = Tensor(feats, dtype=ms.float32)
-        self.bases = Tensor(bases, dtype=ms.float32)
+        self.feats = feats.astype(ms.float32)
+        self.bases = bases.astype(ms.float32)
         self.labels = Tensor(labels)
 
 

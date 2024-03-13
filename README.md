@@ -2,7 +2,7 @@
 ## Paper
 Link: [Towards Better Graph Representation Learning with Parameterized Decomposition & Filtering](https://arxiv.org/abs/2305.06102)
 
-## Quick Begin
+## Quick Start
 ### Dataset
 ```python
 root = "/your/path/to/Datasets/ENZYMES"

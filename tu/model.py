@@ -1,14 +1,14 @@
 import mindspore as ms
-import mindspore_gl.nn.gnn_cell
+from mindspore_gl.nn.gnn_cell import GNNCell
 from mindspore import nn
 from mindspore_gl import BatchedGraph
-from mindspore_gl.nn import GNNCell, SumPooling, AvgPooling, MaxPooling
+from mindspore_gl.nn import SumPooling, AvgPooling, MaxPooling
 
 from dgl_ms.ops import edge_softmax
 from utils.jumping_knowledge import JumpingKnowledge
 
 
-class Net(mindspore_gl.nn.GNNCell):
+class Net(GNNCell):
     def __init__(self,
                  input_dim,
                  output_dim,
@@ -68,8 +68,8 @@ class Net(mindspore_gl.nn.GNNCell):
     def construct(self, h, bases, g: BatchedGraph):
         x = self.lin0(h)
         bases = self.filter_drop(self.filter_encoder(bases))
-        if self.edge_softmax:
-            bases = edge_softmax(g, bases)
+        # if self.edge_softmax:
+        #     bases = edge_softmax(g, bases)
         xs = []
         for conv in self.convs:
             x = conv(x, bases, g)
@@ -80,6 +80,7 @@ class Net(mindspore_gl.nn.GNNCell):
         h_graph = self.final_drop(h_graph)
         h_graph = self.lin2(h_graph)
         return h_graph
+
 
 
 class Conv(GNNCell):

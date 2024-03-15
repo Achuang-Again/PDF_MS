@@ -34,7 +34,7 @@ train_loader, valid_loader = TUDataLoader(
 ### Modules Defined
 ```
 model = Net(input_dim=feat.shape[1],
-            output_dim=1,
+            output_dim=dataset.label_dim,
             num_basis=bases.shape[1],
             config=econ)
 

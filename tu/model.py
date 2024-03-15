@@ -1,6 +1,6 @@
 import mindspore as ms
 from mindspore_gl.nn.gnn_cell import GNNCell
-from mindspore import nn
+from mindspore import nn, ops, Tensor
 from mindspore_gl import BatchedGraph
 from mindspore_gl.nn import SumPooling, AvgPooling, MaxPooling
 
@@ -82,7 +82,6 @@ class Net(GNNCell):
         return h_graph
 
 
-
 class Conv(GNNCell):
     def __init__(self, hidden_size, dropout_rate, nonlinear, batch_norm):
         super().__init__()
@@ -119,13 +118,14 @@ class Conv(GNNCell):
         graph.set_edge_attr({"v": bases})
 
         for ndata in graph.dst_vertex:
-            ndata.aggr_e = graph.sum([u.x * e.v for u, e in ndata.inedges])
+            ndata.aggr_e = graph.avg([u.x * e.v for u, e in ndata.inedges])
         y = ms.Tensor([v.aggr_e for v in graph.dst_vertex])
         y = self.preffn_dropout(y)
-        x = x_feat + y
+        x = x_feat
+        if ops.sum(y) >= 0:
+            x = x + y
         y = self.ffn(x)
         y = self.ffn_dropout(y)
-        x = x + y
+        if ops.sum(y) >= 0:
+            x = x + y
         return x
-
-

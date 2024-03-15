@@ -40,6 +40,7 @@ class TUDataLoader():
 
         self.shuffle = shuffle
         self.seed = seed
+        self.label_dim = 6
         self.kwargs = {'pin_memory': True} if 'GPU' == device else {}
 
         new_dataset = []
@@ -106,10 +107,13 @@ class TUDataLoader():
                     bases = g.bases
                 else:
                     bases = ops.cat([bases, g.bases])
+
+                labeltmp = ops.zeros((1, self.label_dim))
+                labeltmp[0][g.label] = 1
                 if label == None:
-                    label = g.label
+                    label = labeltmp
                 else:
-                    label = ops.cat([label, g.label])
+                    label = ops.cat([label, labeltmp], axis=0)
             graph_mask = ops.full((len(s),), 1, dtype=ms.int64)
             batchedGraphField = BatchedGraphField(src_idx, dst_idx,
                                                   n_node, n_edge,
